@@ -1,0 +1,262 @@
+<html>
+<head>
+  <style>
+  *{padding: 0;margin: 0;}
+  canvas {background: rgba(1,1,1,0);position: absolute;border:none;z-index: 0;left: 0px;top: 0px;width: 100% !important;height: 100% !important;}
+
+</style>
+<script src="three.js" asp-append-version="true"></script>
+<script src="GLTFLoader.js" asp-append-version="true"></script>
+<script src="GLTFExporter.js" asp-append-version="true"></script>
+</head>
+<body >
+<canvas class="pctx" id="pctx"></canvas>
+<button style="position:fixed; height:100px;width:100px;cursor:pointer" onclick="exportBad()">BAD EXPORT</button>
+<button style="position:fixed; left:calc(100% - 100px);height:100px;width:100px;cursor:pointer" onclick="exportGood()">GOOD EXPORT</button>
+<!--<button style="position:fixed; top:calc(100% - 100px);height:100px;width:100px;cursor:pointer" onclick="exportBinary()">Binary EXPORT</button>-->
+<script>
+/*
+     ,.o\O{}O/o
+   .oo\o.\/o\/.o/,
+ .oo<\O<O\\/|\//O>/
+\O}>\O<O\\</o\>//O>/
+\)>/oO<O\(((||))))/O>
+)(\o\<O\<oo<OOOO>oo>/O>
+o<oo<O\(MWM(|))MWM)/O>
+ <\(o<\()OO(|))OO()/>
+  (O\o<~-(oooo).-o0O0o-..    _./
+    \.)(o<<OoO>.-/ / /   ). ((
+            \\o=/ / / /   }  ))
+                 `.        \//
+                  ^~`-//---'
+                      \\_
+       _______                       __                            ______            __    __
+      /       \                     /  |                          /      |          /  |  /  |
+      $$$$$$$  |  ______    ______  $$/  _______    ______        $$$$$$/  _______  $$/  _$$ |_
+      $$ |__$$ | /      \  /      \ /  |/       \  /      \         $$ |  /       \ /  |/ $$   |
+      $$    $$< /$$$$$$  |/$$$$$$  |$$ |$$$$$$$  |/$$$$$$  |        $$ |  $$$$$$$  |$$ |$$$$$$/
+      $$$$$$$  |$$ |  $$ |$$ |  $$/ $$ |$$ |  $$ |$$ |  $$ |        $$ |  $$ |  $$ |$$ |  $$ | __
+      $$ |__$$ |$$ \__$$ |$$ |      $$ |$$ |  $$ |$$ \__$$ |       _$$ |_ $$ |  $$ |$$ |  $$ |/  |
+      $$    $$/ $$    $$/ $$ |      $$ |$$ |  $$ |$$    $$ |      / $$   |$$ |  $$ |$$ |  $$  $$/
+      $$$$$$$/   $$$$$$/  $$/       $$/ $$/   $$/  $$$$$$$ |      $$$$$$/ $$/   $$/ $$/    $$$$/
+                                                  /  \__$$ |
+                                                  $$    $$/
+                                                   $$$$$$/
+                   __                 ______    ______
+                  /  |               /      \  /      \
+        _______  _$$ |_    __    __ /$$$$$$  |/$$$$$$  |
+       /       |/ $$   |  /  |  /  |$$ |_ $$/ $$ |_ $$/
+      /$$$$$$$/ $$$$$$/   $$ |  $$ |$$   |    $$   |
+      $$      \   $$ | __ $$ |  $$ |$$$$/     $$$$/
+       $$$$$$  |  $$ |/  |$$ \__$$ |$$ |      $$ |
+      /     $$/   $$  $$/ $$    $$/ $$ |      $$ |
+      $$$$$$$/     $$$$/   $$$$$$/  $$/       $$/
+
+*/
+console.log(THREE);
+var WIDTH = window.innerWidth;
+var HEIGHT = window.innerHeight;
+camera = new THREE.PerspectiveCamera(40, WIDTH / HEIGHT, 1, 100000);
+var scene = new THREE.Scene();
+var ambientLight = new THREE.AmbientLight(0xcccccc);
+scene.add(ambientLight);
+scene.add(camera)
+var renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('pctx'),
+    antialias: true
+});
+/* Configure Renderer */
+renderer.setClearColor(0xffffff, 0);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(window.innerWidth / 2, window.innerHeight);
+renderer.autoClear = false;
+
+
+function render() {
+    renderer.clear();
+    renderer.render(scene, camera);
+    requestAnimationFrame(render);
+    mixer.update(clock.getDelta())
+}
+
+var loader = new THREE.GLTFLoader();
+var mixer = new THREE.AnimationMixer(scene);
+var clock = new THREE.Clock();
+var animation;
+loader.crossOrigin = "";
+var morphTargets = [];
+var rawModel;
+var group=new THREE.Group();
+
+
+/*
+     ______                                               __                         __  __
+    |      \                                             |  \                       |  \|  \
+     \$$$$$$ ______ ____    ______    ______    ______  _| $$_              ______  | $$| $$____
+      | $$  |      \    \  /      \  /      \  /      \|   $$ \            /      \ | $$| $$    \
+      | $$  | $$$$$$\$$$$\|  $$$$$$\|  $$$$$$\|  $$$$$$\\$$$$$$           |  $$$$$$\| $$| $$$$$$$\
+      | $$  | $$ | $$ | $$| $$  | $$| $$  | $$| $$   \$$ | $$ __          | $$  | $$| $$| $$  | $$
+     _| $$_ | $$ | $$ | $$| $$__/ $$| $$__/ $$| $$       | $$|  \       __| $$__| $$| $$| $$__/ $$
+    |   $$ \| $$ | $$ | $$| $$    $$ \$$    $$| $$        \$$  $$      |  \\$$    $$| $$| $$    $$
+     \$$$$$$ \$$  \$$  \$$| $$$$$$$   \$$$$$$  \$$         \$$$$        \$$_\$$$$$$$ \$$ \$$$$$$$
+                          | $$                                            |  \__| $$
+                          | $$                                             \$$    $$
+                           \$$                                              \$$$$$$
+*/
+loader.load('quadsphr2.glb', function(gltf) {
+    console.log(gltf);
+    group.add(gltf.scene.children[0])
+    scene.add(group);
+    rawModel = gltf;
+    group.traverse((e) => {
+        console.log(e);
+        if (e.type == "Mesh") {
+            e.name = "quadsphr"
+            if (e.morphTargetInfluences && e.morphTargetInfluences.length > 0) {
+                morphTargets.push(e)
+            }
+        }
+    });
+      group.position.z = -10;
+    /*
+       __       __            __
+      |  \     /  \          |  \
+      | $$\   /  $$  ______  | $$   __   ______
+      | $$$\ /  $$$ |      \ | $$  /  \ /      \
+      | $$$$\  $$$$  \$$$$$$\| $$_/  $$|  $$$$$$\
+      | $$\$$ $$ $$ /      $$| $$   $$ | $$    $$
+      | $$ \$$$| $$|  $$$$$$$| $$$$$$\ | $$$$$$$$
+      | $$  \$ | $$ \$$    $$| $$  \$$\ \$$     \
+       \$$      \$$  \$$$$$$$ \$$   \$$  \$$$$$$$
+
+        ______             __                           __      __
+       /      \           |  \                         |  \    |  \
+      |  $$$$$$\ _______   \$$ ______ ____    ______  _| $$_    \$$  ______   _______
+      | $$__| $$|       \ |  \|      \    \  |      \|   $$ \  |  \ /      \ |       \
+      | $$    $$| $$$$$$$\| $$| $$$$$$\$$$$\  \$$$$$$\\$$$$$$  | $$|  $$$$$$\| $$$$$$$\
+      | $$$$$$$$| $$  | $$| $$| $$ | $$ | $$ /      $$ | $$ __ | $$| $$  | $$| $$  | $$
+      | $$  | $$| $$  | $$| $$| $$ | $$ | $$|  $$$$$$$ | $$|  \| $$| $$__/ $$| $$  | $$
+      | $$  | $$| $$  | $$| $$| $$ | $$ | $$ \$$    $$  \$$  $$| $$ \$$    $$| $$  | $$
+       \$$   \$$ \$$   \$$ \$$ \$$  \$$  \$$  \$$$$$$$   \$$$$  \$$  \$$$$$$  \$$   \$$
+
+    */
+
+    var keyframeTimes = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+    var keyframeValues = [
+        [0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0],
+        [0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0]
+    ];
+    var tracks = [];
+    for (var i = 0; i < keyframeValues.length; i++) {
+        var x = "quadsphr" + ".morphTargetInfluences[Key" + i + "]";
+        console.log(x)
+        var tempTrack = new THREE.NumberKeyframeTrack(x, keyframeTimes, keyframeValues[i], THREE.InterpolateLinear)
+        tracks.push(tempTrack)
+    }
+    console.log(tracks);
+    animation = new THREE.AnimationClip("bug", -1, tracks);
+
+  
+    requestAnimationFrame(render);
+});
+
+
+
+/*
+       ________                                           __
+      |        \                                         |  \
+      | $$$$$$$$ __    __   ______    ______    ______  _| $$_
+      | $$__    |  \  /  \ /      \  /      \  /      \|   $$ \
+      | $$  \    \$$\/  $$|  $$$$$$\|  $$$$$$\|  $$$$$$\\$$$$$$
+      | $$$$$     >$$  $$ | $$  | $$| $$  | $$| $$   \$$ | $$ __
+      | $$_____  /  $$$$\ | $$__/ $$| $$__/ $$| $$       | $$|  \
+      | $$     \|  $$ \$$\| $$    $$ \$$    $$| $$        \$$  $$
+       \$$$$$$$$ \$$   \$$| $$$$$$$   \$$$$$$  \$$         \$$$$
+                          | $$
+                          | $$
+                           \$$
+*/
+
+function exportBad() {
+    if (animation) {
+        var exporter = new THREE.GLTFExporter();
+        exporter.parse(group, function(gltf) {
+            console.log(gltf);
+            var blob = new Blob([JSON.stringify(gltf)], {
+                type: 'text/json'
+            })
+            var dataStr = window.URL.createObjectURL(blob);
+            var downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            console.log(dataStr, blob)
+            downloadAnchorNode.setAttribute("download", "bug.gltf");
+            downloadAnchorNode.style.display = "none"
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            //downloadAnchorNode.remove();
+
+        }, {
+            onlyVisible: false,
+            animations: [animation],
+            binary: false
+        });
+    }
+
+}
+function exportGood() {
+    if (animation) {
+        var exporter = new THREE.GLTFExporter();
+        exporter.parse(group.children[0], function(gltf) {
+            console.log(gltf);
+            var blob = new Blob([JSON.stringify(gltf)], {
+                type: 'text/json'
+            })
+            var dataStr = window.URL.createObjectURL(blob);
+            var downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            console.log(dataStr, blob)
+            downloadAnchorNode.setAttribute("download", "bug.gltf");
+            downloadAnchorNode.style.display = "none"
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            //downloadAnchorNode.remove();
+
+        }, {
+            onlyVisible: false,
+            animations: [animation],
+            binary: false
+        });
+    }
+
+}
+
+/*function exportBinary() {
+    if (animation) {
+        var exporter = new THREE.GLTFExporter();
+        exporter.parse(group.children[0], function(gltf) {
+            console.log(gltf);
+            var blob = new Blob([JSON.stringify(gltf)], {
+                type: 'text/json'
+            })
+            var dataStr = window.URL.createObjectURL(blob);
+            var downloadAnchorNode = document.createElement('a');
+            downloadAnchorNode.setAttribute("href", dataStr);
+            console.log(dataStr, blob)
+            downloadAnchorNode.setAttribute("download", "bug.glb");
+            downloadAnchorNode.style.display = "none"
+            document.body.appendChild(downloadAnchorNode); // required for firefox
+            downloadAnchorNode.click();
+            //downloadAnchorNode.remove();
+
+        }, {
+            onlyVisible: false,
+            animations: [animation],
+            binary: true
+        });
+    }
+
+}*/
+</script>
+</body>
+</html>
