@@ -1,5 +1,5 @@
 # Fucking-Morph-Target-Animations
-Showcase of current GLTF export bug with morph target animations that don't target the root animation node.
+Showcase of current GLTF export bug with morph target animations that don't target the root node being exported.
 
 
 There is a bug with the GLTF Exporter in threejs. When merging morphtarget tracks, the code in the GLTF Exporter currently hardcodes the track name to be '.morphTargetInfluences'.
@@ -11,7 +11,7 @@ https://threejs.org/docs/#api/en/animation/PropertyBinding.parseTrackName
 
 # The Problem
 
-So the problem with hardcoding the track name as '.morphTargetInfluences' is that it ignorantly assumes the animation tracks being merged are targeting the root node of the animation. However, in cases where the unmerged morph target animation tracks are targeting children nodes of the root animation node, those targets are lost and the exporter will fail to create any .gltf file.
+So the problem with hardcoding the track name as '.morphTargetInfluences' is that it ignorantly assumes the animation tracks being merged are targeting the root node of the export. However, in cases where the unmerged morph target animation tracks are targeting children nodes of the root export node, those targets are lost and the exporter will fail to create any .gltf file.
 
 
 This repo is an example which demonstrates this bug. You can check out a live version here:
@@ -25,3 +25,10 @@ Bad export will attempt to do the same thing, except it exports a group containi
 # The Solution
 
 If you replace the unnmodified `GLTFExporter.js` with my `GLTFExporterFixed.js` which contains my proposed changes, you'll then be able to run the "Bad Export" without error. I even tested the file output in Dom's GLTF2Viewer and it came in clean with no errors or warnings.
+
+It is an easy fix simply changing:
+```				mergedTrack.name = '.morphTargetInfluences';```
+To:
+```				mergedTrack.name = sourceTrack.name;```
+
+This way the mergedTrack animation inherits the correct target from the tracks it's combining.
