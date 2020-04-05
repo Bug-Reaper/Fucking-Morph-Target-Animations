@@ -26,9 +26,25 @@ Bad export will attempt to do the same thing, except it exports a group containi
 
 If you replace the unnmodified `GLTFExporter.js` with my `GLTFExporterFixed.js` which contains my proposed changes, you'll then be able to run the "Bad Export" without error. I even tested the file output in Dom's GLTF2Viewer and it came in clean with no errors or warnings.
 
+
+
+
 It is an easy fix simply changing:
+
 ```				mergedTrack.name = '.morphTargetInfluences';```
+
+
+
 To:
+
+
+
+
 ```				mergedTrack.name = sourceTrack.name;```
+
+
+
+
+
 
 This way the mergedTrack animation inherits the correct target from the tracks it's combining.
