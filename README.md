@@ -13,7 +13,7 @@ https://threejs.org/docs/#api/en/animation/PropertyBinding.parseTrackName
 
 # The Problem
 
-So the problem with hardcoding the track name as '.morphTargetInfluences' is that it ignorantly assumes the animation tracks being merged are targeting the root node of the export. However, in cases where the unmerged morph target animation tracks are targeting children nodes of the root export node, those targets are lost and the exporter will fail to create any .gltf file.
+So the problem with hardcoding the track name as '.morphTargetInfluences' is that it naively assumes the animation tracks being merged are targeting the root node of the export. However, in cases where the unmerged morph target animation tracks are targeting children nodes of the root export node, those targets are lost and the exporter will fail to create any .gltf file.
 
 
 This repo is an example which demonstrates this bug. You can check out a live version here:
