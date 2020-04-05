@@ -15,6 +15,8 @@ So the problem with hardcoding the track name as '.morphTargetInfluences' is tha
 
 
 This repo is an example which demonstrates this bug. You can check out a live version here:
+https://threejs-demos.s3.us-east-2.amazonaws.com/bug.html
+
 
 The demo has two buttons: "Good Export" and "Bad Export".
 
