@@ -2,11 +2,15 @@
 Showcase of current GLTF export bug with morph target animations that don't target the root animation node.
 
 
-There is a bug with the GLTF Exporter in threejs. When merging morphtarget tracks, the code in the GLTF Exporter currently hardcodes the track name to be `'.morphTargetInfluences';`.
+There is a bug with the GLTF Exporter in threejs. When merging morphtarget tracks, the code in the GLTF Exporter currently hardcodes the track name to be '.morphTargetInfluences'.
+
+
 To refresh your memory on the purpose of Animation track names, they essentially serve as map to determine which property should be influenced by the animation. Checking out this doc on parsing track names is a good way to see how much variety there is:
 https://threejs.org/docs/#api/en/animation/PropertyBinding.parseTrackName
 
+
 So the problem with hardcoding the track name as '.morphTargetInfluences' is that it ignorantly assumes the animation tracks being merged are targeting the root node of the animation. However, in cases where the unmerged morph target animation tracks are targeting children nodes of the root animation node, those targets are lost and the exporter will fail to create any .gltf file.
+
 
 This repo is an example which demonstrates this bug. You can check out a live version here:
 
