@@ -6,6 +6,8 @@ There is a bug with the GLTF Exporter in threejs. When merging morphtarget track
 
 
 To refresh your memory on the purpose of Animation track names, they essentially serve as map to determine which property should be influenced by the animation. Checking out this doc on parsing track names is a good way to see how much variety there is:
+
+
 https://threejs.org/docs/#api/en/animation/PropertyBinding.parseTrackName
 
 
