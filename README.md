@@ -16,7 +16,7 @@ This repo is an example which demonstrates this bug. You can check out a live ve
 
 The demo has two buttons: "Good Export" and "Bad Export".
 
-Good export simply exports an object3d with morph targets and an animation as .gltf file.
+Good export simply exports an object3d with morph targets and an animation as a .gltf file.
 
 Bad export will attempt to do the same thing, except it exports a group containing the object3d that is being targeted by the morphtarget animation. This fails and you can see the error in console.
 
