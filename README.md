@@ -9,7 +9,7 @@ To refresh your memory on the purpose of Animation track names, they essentially
 https://threejs.org/docs/#api/en/animation/PropertyBinding.parseTrackName
 
 
-#The Problem
+# The Problem
 
 So the problem with hardcoding the track name as '.morphTargetInfluences' is that it ignorantly assumes the animation tracks being merged are targeting the root node of the animation. However, in cases where the unmerged morph target animation tracks are targeting children nodes of the root animation node, those targets are lost and the exporter will fail to create any .gltf file.
 
@@ -22,6 +22,6 @@ Good export simply exports an object3d with morph targets and an animation as a 
 
 Bad export will attempt to do the same thing, except it exports a group containing the object3d that is being targeted by the morphtarget animation. This fails and you can see the error in console.
 
-#The Solution
+# The Solution
 
 If you replace the unnmodified `GLTFExporter.js` with my `GLTFExporterFixed.js` which contains my proposed changes, you'll then be able to run the "Bad Export" without error. I even tested the file output in Dom's GLTF2Viewer and it came in clean with no errors or warnings.
